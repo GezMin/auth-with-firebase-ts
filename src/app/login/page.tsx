@@ -1,7 +1,7 @@
-import React from 'react'
+import SingIn from '@/components/auth/SingIn'
 
 const page = () => {
-    return <div>page</div>
+    return <SingIn />
 }
 
 export default page

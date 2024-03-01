@@ -1,7 +1,7 @@
-import React from 'react'
+import SingUp from '@/components/auth/SingUp'
 
 const page = () => {
-    return <div>page</div>
+    return <SingUp />
 }
 
 export default page
