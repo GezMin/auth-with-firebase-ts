@@ -1,13 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, SetStateAction } from 'react'
 import { FIREBASE_DB } from '@/firebaseConfig'
 import { doc, getDoc } from 'firebase/firestore'
 
-const useFirestoreUser = uid => {
+interface Error {
+    message: string
+}
+
+const useFirestoreUser = (uid: string) => {
     const [userData, setUserData] = useState(null)
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState(null)
 
     useEffect(() => {
+        setUserData(null as SetStateAction<null>)
         const fetchUserData = async () => {
             try {
                 const userDocRef = doc(FIREBASE_DB, 'users', uid)
@@ -19,11 +24,12 @@ const useFirestoreUser = uid => {
                         ...userDocSnapshot.data(),
                     })
                 } else {
-                    setUserData(null) // Устанавливаем null, если пользователь не найден
+                    // Устанавливаем null, если пользователь не найден
+                    setUserData(null)
                 }
 
                 setLoading(false)
-            } catch (error) {
+            } catch (error: Error | any) {
                 console.error('Error fetching user data:', error)
                 setError(error)
                 setLoading(false)
