@@ -1,14 +1,14 @@
 'use client'
 import { FIREBASE_AUTH } from '@/firebaseConfig'
-import { onAuthStateChanged } from 'firebase/auth'
+import { onAuthStateChanged, User } from 'firebase/auth'
 import useFirestoreUser from '../../hooks/useFirestireUser'
 import Image from 'next/image'
 import infinityLoading from './infinityLoading.svg'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-const page = () => {
-    const [authUser, setAuthUser] = useState(null)
+const Page = () => {
+    const [authUser, setAuthUser] = useState<User | null>(null)
 
     useEffect(() => {
         const listener = onAuthStateChanged(FIREBASE_AUTH, user => {
@@ -24,7 +24,7 @@ const page = () => {
         }
     }, [])
 
-    const { userData, loading, error } = useFirestoreUser(authUser?.uid)
+    const { userData, loading, error } = useFirestoreUser(authUser?.uid || '')
 
     if (loading) {
         return (
@@ -51,7 +51,7 @@ const page = () => {
     if (error) {
         return (
             <div className='w-full h-[90vh] flex justify-center items-center '>
-                Error: {error.message}
+                Error: {error}
             </div>
         )
     }
@@ -69,12 +69,20 @@ const page = () => {
             {authUser && (
                 <>
                     <h2 className='text-2xl'>User Profile:</h2>
+                    <p>
+                        Registered:{' '}
+                        {userData?.createdAt.toDate().toLocaleDateString()}
+                    </p>
                     <p>Name: {userData.name}</p>
                     <p>Money: {userData.money}</p>
+                    <p>
+                        {' '}
+                        {userData?.address && 'Address: ' + userData.address}
+                    </p>
                 </>
             )}
         </div>
     )
 }
 
-export default page
+export default Page

@@ -1,36 +1,36 @@
 import { useState, useEffect, SetStateAction } from 'react'
 import { FIREBASE_DB } from '@/firebaseConfig'
 import { doc, getDoc } from 'firebase/firestore'
-
-interface Error {
-    message: string
-}
+import { Error, UserData } from '@/types/types'
 
 const useFirestoreUser = (uid: string) => {
-    const [userData, setUserData] = useState(null)
+    const [userData, setUserData] = useState<UserData | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState(null)
 
     useEffect(() => {
-        setUserData(null as SetStateAction<null>)
+        setUserData(null)
         const fetchUserData = async () => {
             try {
                 const userDocRef = doc(FIREBASE_DB, 'users', uid)
                 const userDocSnapshot = await getDoc(userDocRef)
 
                 if (userDocSnapshot.exists()) {
-                    setUserData({
+                    const userDataFromSnapshot: UserData = {
                         id: userDocSnapshot.id,
-                        ...userDocSnapshot.data(),
-                    })
+                        name: userDocSnapshot.data().name,
+                        money: userDocSnapshot.data().money,
+                        createdAt: userDocSnapshot.data().createdAt,
+                        address: userDocSnapshot.data().address,
+                    }
+                    setUserData(userDataFromSnapshot)
                 } else {
-                    // Устанавливаем null, если пользователь не найден
                     setUserData(null)
                 }
 
                 setLoading(false)
             } catch (error: Error | any) {
-                console.error('Error fetching user data:', error)
+                console.error(error || error.message)
                 setError(error)
                 setLoading(false)
             }

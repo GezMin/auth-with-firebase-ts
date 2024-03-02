@@ -1,19 +1,22 @@
 'use client'
-import { useState } from 'react'
+import { SyntheticEvent, useState } from 'react'
 import { FIREBASE_AUTH, FIREBASE_DB } from '@/firebaseConfig'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
+import { CustomError } from '@/types/types'
 
-const SignUp = () => {
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [copyPassword, setCopyPassword] = useState('')
-    const [error, setError] = useState('')
+interface SignUpProps {}
+
+const SignUp: React.FC<SignUpProps> = () => {
+    const [name, setName] = useState<string>('')
+    const [email, setEmail] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+    const [copyPassword, setCopyPassword] = useState<string>('')
+    const [error, setError] = useState<string>('')
     const router = useRouter()
 
-    const saveDataToUser = async userUID => {
+    const saveDataToUser = async (userUID: string) => {
         const userDocRef = doc(FIREBASE_DB, 'users', userUID)
         try {
             await setDoc(userDocRef, {
@@ -28,7 +31,7 @@ const SignUp = () => {
         }
     }
 
-    const registerUser = async e => {
+    const registerUser = async (e: SyntheticEvent) => {
         e.preventDefault()
 
         try {
@@ -45,7 +48,7 @@ const SignUp = () => {
             setError('')
             await saveDataToUser(user.uid)
             router.push('/')
-        } catch (error) {
+        } catch (error: CustomError | any) {
             setError(error.message)
         }
     }

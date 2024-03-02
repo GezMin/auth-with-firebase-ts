@@ -1,7 +1,7 @@
 'use client'
 import { FIREBASE_AUTH } from '@/firebaseConfig'
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { useState } from 'react'
+import { MouseEventHandler, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 const SingIn = () => {
@@ -10,7 +10,7 @@ const SingIn = () => {
     const [error, setError] = useState<string>('')
     const router = useRouter()
 
-    const logInUser = e => {
+    const logInUser: MouseEventHandler<HTMLButtonElement> = e => {
         e.preventDefault()
 
         signInWithEmailAndPassword(FIREBASE_AUTH, email, password)

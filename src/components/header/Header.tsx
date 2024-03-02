@@ -1,11 +1,11 @@
 'use client'
 import { FIREBASE_AUTH } from '@/firebaseConfig'
-import { onAuthStateChanged } from 'firebase/auth'
+import { onAuthStateChanged, User } from 'firebase/auth'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-const Header = () => {
-    const [authUser, setAuthUser] = useState(null)
+const Header: React.FC = () => {
+    const [authUser, setAuthUser] = useState<User | null>(null)
 
     useEffect(() => {
         const listener = onAuthStateChanged(FIREBASE_AUTH, user => {
